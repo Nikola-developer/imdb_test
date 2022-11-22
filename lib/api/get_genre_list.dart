@@ -21,6 +21,6 @@ Future<MyResponseModel> getGenreList() async {
 
     return MyResponseModel(data: list);
   } else {
-    return MyResponseModel(errorCode: 2, errorText: 'Something went wrong!');
+    return response;
   }
 }
