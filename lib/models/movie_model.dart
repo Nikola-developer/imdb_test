@@ -39,7 +39,6 @@ class MovieModel {
         'title': title,
         'video': video,
         'vote_average': voteAverage,
-        'genre_ids': listGenreIds,
         'favourite': favourite,
       };
 }
