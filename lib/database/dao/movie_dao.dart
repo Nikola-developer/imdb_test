@@ -26,7 +26,7 @@ class MovieDao {
       await batch.commit(continueOnError: false);
       return true;
     } catch (e) {
-      print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa e: $e');
+      print('e: $e');
       return false;
     }
   }
@@ -43,25 +43,30 @@ class MovieDao {
     //   whereArgs: [page * limit, (page + 1) * limit],
     // );
 
-    String sql = ''
-        "SELECT m.*, mg.genres, mg.genre_ids "
-        "FROM movies m "
-        "LEFT JOIN ( "
-        "    SELECT mg.id_movie, "
-        " '[' || GROUP_CONCAT('{\"id\":' || g.id || ', "
-        " \"name\":\"' || g.name || '\"}' ) || ']' as genres, "
-        " '[' ||GROUP_CONCAT(g.id) || ']' as genre_ids "
-        "    FROM movies_genres mg "
-        "    LEFT JOIN genres g on g.id = mg.id_genre "
-        "    GROUP BY mg.id_movie "
-        ") mg on mg.id_movie = m.id"
-        "WHERE m.id > ${page * limit} AND m.id < ${(page + 1) * limit}  ";
+    if (page > 0) {
+      page = page * 10;
+    }
 
-    final List<Map<String, dynamic>> maps = await db!.rawQuery(sql);
+      String sql = ''
+          "SELECT m.*, mg.genres, mg.genre_ids "
+          "FROM movies m "
+          "LEFT JOIN ( "
+          "    SELECT mg.id_movie, "
+          " '[' || GROUP_CONCAT('{\"id\":' || g.id || ', "
+          " \"name\":\"' || g.name || '\"}' ) || ']' as genres, "
+          " '[' ||GROUP_CONCAT(g.id) || ']' as genre_ids "
+          "    FROM movies_genres mg "
+          "    LEFT JOIN genres g on g.id = mg.id_genre "
+          "    GROUP BY mg.id_movie "
+          ") mg on mg.id_movie = m.id "
+          "WHERE m.page > ${page} AND m.page <= ${(page + limit)}  ";
 
-    return List.generate(maps.length, (i) {
-      print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa maps[i]: ${maps[i]}');
-      return MovieModel.fromDatabaseJson(maps[i]);
-    });
-  }
+      print('sql: ${sql}');
+      final List<Map<String, dynamic>> maps = await db!.rawQuery(sql);
+
+      return List.generate(maps.length, (i) {
+        print('maps[i]: ${maps[i]}');
+        return MovieModel.fromDatabaseJson(maps[i]);
+      });
+    }
 }

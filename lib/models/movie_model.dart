@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:imdb_test/models/genre_model.dart';
 
 class MovieModel {
+  int? page;
   int id;
   String posterPath;
   String releaseDate;
@@ -27,6 +28,7 @@ class MovieModel {
   });
 
   MovieModel.fromDatabase({
+    required this.page,
     required this.id,
     required this.posterPath,
     required this.releaseDate,
@@ -49,7 +51,8 @@ class MovieModel {
         favourite = json['favourite'] ?? false;
 
   MovieModel.fromDatabaseJson(Map<String, dynamic> jsonData)
-      : id = jsonData['id'],
+      : page = jsonData['page'],
+        id = jsonData['id'],
         posterPath = jsonData['poster_path'],
         releaseDate = jsonData['release_date'],
         title = jsonData['title'],

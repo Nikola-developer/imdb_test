@@ -53,7 +53,8 @@ class DatabaseProvider {
 
     await database.execute(
       'CREATE TABLE `$tableMovies` ( '
-      'id INTEGER PRIMARY KEY NOT NULL, '
+      'page INTEGER PRIMARY KEY AUTOINCREMENT, '
+      'id INTEGER NOT NULL, '
       'poster_path VARCHAR NOT NULL, '
       'release_date DATE NOT NULL, '
       'title VARCHAR NOT NULL, '
