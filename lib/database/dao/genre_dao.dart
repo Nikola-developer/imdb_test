@@ -9,7 +9,7 @@ class GenreDao {
 
     print('GenreDao - insertData - genreModel.id: ${genreModel.id}');
 
-    var result = db!.insert(dbProvider.tableGenre, genreModel.toDatabaseJson());
+    var result = db!.insert(dbProvider.tableGenres, genreModel.toDatabaseJson());
     return result;
   }
 

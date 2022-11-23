@@ -7,8 +7,8 @@ import 'package:sqflite/sqflite.dart';
 
 class DatabaseProvider {
   final String databaseName = 'imdb_database.db';
-  final String tableMovie = 'movie';
-  final String tableGenre = 'genre';
+  final String tableMovies = 'movies';
+  final String tableGenres = 'genres';
   final String tableMoviesGenres = 'movies_genres';
   static final DatabaseProvider dbProvider = DatabaseProvider();
 
@@ -45,14 +45,14 @@ class DatabaseProvider {
 
   void initDB(Database database, int version) async {
     await database.execute(
-      'CREATE TABLE `$tableGenre` ( '
+      'CREATE TABLE `$tableGenres` ( '
       'id INTEGER PRIMARY KEY, '
       'name VARCHAR DEFAULT NULL '
       ')',
     );
 
     await database.execute(
-      'CREATE TABLE `$tableMovie` ( '
+      'CREATE TABLE `$tableMovies` ( '
       'id INTEGER PRIMARY KEY NOT NULL, '
       'poster_path VARCHAR NOT NULL, '
       'release_date DATE NOT NULL, '

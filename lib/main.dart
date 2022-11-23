@@ -6,6 +6,7 @@ import 'package:imdb_test/api/get_movie_details.dart';
 import 'package:imdb_test/api/get_movies_list.dart';
 import 'package:imdb_test/database/dao/genre_dao.dart';
 import 'package:imdb_test/database/dao/movie_dao.dart';
+import 'package:imdb_test/models/movie_model.dart';
 import 'package:imdb_test/models/response_model.dart';
 import 'package:imdb_test/theme/themes.dart';
 
@@ -44,6 +45,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   Future<void> _incrementCounter() async {
 
+
+    List<MovieModel> listMovies = [];
+    listMovies = await MovieDao().readData(1);
+
+    listMovies.forEach((movie) {
+      print('movie - responseGenre.error_code: ${movie.id}');
+      print('movie - responseGenre.error_code: ${movie.listGenres}');
+    });
+
+    return;
+
     /// Todo - baza
     /// Insert radi dobro (Proveri da li je upisao sve redove za vezu)
     /// Proveri da li lepo radi SELECT (vidi kako ce da konvertuje bool???)
@@ -63,7 +75,9 @@ class _MyHomePageState extends State<MyHomePage> {
     MyResponseModel responseMoviesList = await getMoviesList(1);
     if (responseMoviesList.errorCode == 0) {
       for (var data in responseMoviesList.data) {
-        MovieDao().insertData(data);
+        if(! await MovieDao().insertData(data)){
+          /// todo Prikazi gresku
+        }
       }
     }
     if (kDebugMode) {
