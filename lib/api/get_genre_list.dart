@@ -17,7 +17,9 @@ Future<MyResponseModel> getGenreList() async {
   );
 
   if (response.errorCode == 0) {
-    List<GenreModel> list = List<GenreModel>.from(json.decode(response.data)['genres'].map((model) => GenreModel.fromJson(model)));
+    List<GenreModel> list = List<GenreModel>.from(json
+        .decode(response.data)['genres']
+        .map((model) => GenreModel.fromJson(model)));
 
     return MyResponseModel(data: list);
   } else {

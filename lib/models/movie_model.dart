@@ -45,7 +45,7 @@ class MovieModel {
         posterPath = json['poster_path'],
         releaseDate = json['release_date'],
         title = json['title'],
-        video = json['video'],
+        video = json['video'] == 1 ? true : false,
         voteAverage = json['vote_average'].toDouble(),
         listGenreIds = List<int>.from(json['genre_ids'].map((model) => model)),
         favourite = json['favourite'] ?? false;
@@ -70,8 +70,8 @@ class MovieModel {
         'poster_path': posterPath,
         'release_date': releaseDate,
         'title': title,
-        'video': video,
+        'video': video ? 1 : 0,
         'vote_average': voteAverage,
-        'favourite': favourite,
+        'favourite': favourite ? 1 : 0,
       };
 }

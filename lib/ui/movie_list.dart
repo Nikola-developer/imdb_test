@@ -9,6 +9,7 @@ import 'package:imdb_test/main.dart';
 import 'package:imdb_test/models/movie_model.dart';
 import 'package:imdb_test/models/response_model.dart';
 import 'package:imdb_test/theme/colors.dart';
+import 'package:imdb_test/ui/movie_item.dart';
 
 class MovieList extends StatefulWidget {
   MovieList({super.key});
@@ -62,6 +63,8 @@ class _MovieListState extends State<MovieList> {
     _isFirstLoadRunning = true;
     setState(() {});
 
+    await _checkGenres();
+
     listMovies = await getDataList();
     setState(() {});
 
@@ -73,7 +76,6 @@ class _MovieListState extends State<MovieList> {
     late List<MovieModel> fechedMovies;
     fechedMovies = await MovieDao().readData(_page);
     _page += 2; // Increase _page by 2
-    print('fechedMovies : $fechedMovies');
 
     /// Fetch new data only when not on favourites page
     // if (!widget.favouritesOnly && fechedMovies.isEmpty) {
@@ -81,7 +83,6 @@ class _MovieListState extends State<MovieList> {
       MyResponseModel response = await getMoviesList(_page);
       if (response.errorCode == 0) {
         fechedMovies = response.data;
-        setState(() {});
 
         for (var movie in fechedMovies) {
           if (!await MovieDao().insertData(movie)) {
@@ -90,10 +91,8 @@ class _MovieListState extends State<MovieList> {
         }
 
         /// todo Cita iz baze da bi vezao 'genres'
-        print('Cita iz baze da bi vezao genres');
         fechedMovies = [];
-        fechedMovies = await MovieDao().readData(_page-2);
-        print('fechedMovies : $fechedMovies');
+        fechedMovies = await MovieDao().readData(_page - 2);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -113,16 +112,22 @@ class _MovieListState extends State<MovieList> {
             child: CircularProgressIndicator(),
           )
         : Column(
-            children: [ Expanded(
-                child:
-                ListView.builder(
-                scrollDirection: Axis.vertical,
-                itemCount: listMovies.length,
-                controller: _controller,
-                itemBuilder: (BuildContext context, int index) {
-                  return MovieListItem(movie: listMovies[index]);
-                },
-              ),
+            children: [
+              const SizedBox(height: myPadding),
+              Expanded(
+                child: ListView.builder(
+                  scrollDirection: Axis.vertical,
+                  itemCount: listMovies.length,
+                  controller: _controller,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Column(
+                      children: [
+                        if (index > 0) const SizedBox(height: myPadding),
+                        MovieListItem(movie: listMovies[index])
+                      ],
+                    );
+                  },
+                ),
               ),
               // if (!favouritesOnly && !_hasNextPage)
               if (!_hasNextPage)
@@ -136,104 +141,15 @@ class _MovieListState extends State<MovieList> {
             ],
           );
   }
-}
 
-class MovieListItem extends StatefulWidget {
-  MovieListItem({super.key, required this.movie});
-
-  MovieModel movie;
-
-  @override
-  State<MovieListItem> createState() => _MovieListItemState();
-}
-
-class _MovieListItemState extends State<MovieListItem> {
-  _listGenres() {
-    return SizedBox(
-      height: 27,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: widget.movie.listGenres!.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Row(
-            children: [
-              const SizedBox(width: 4),
-              Container(
-                  decoration: BoxDecoration(
-                    color: PrimaryColor.withOpacity(.2),
-                    borderRadius: const BorderRadius.all(Radius.circular(4)),
-                  ),
-                  padding: const EdgeInsets.fromLTRB(4, 8, 4, 8),
-                  child: Text(
-                    widget.movie.listGenres![index].name,
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  )),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    print('https://image.tmdb.org/t/p/w500${widget.movie.posterPath}');
-    return Column(
-      children: [
-        const SizedBox(height: myPadding),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image.network(
-              'https://image.tmdb.org/t/p/w500${widget.movie.posterPath}',
-              height: 100,
-              width: 100,
-              fit: BoxFit.cover,
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-                child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  widget.movie.page!.toString(),
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  widget.movie.title,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    const Icon(Icons.star, color: SecondaryColor),
-                    const SizedBox(width: 5.33),
-                    Text(
-                      '${widget.movie.voteAverage} / 10 IMDb',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                _listGenres(),
-              ],
-            )),
-          ],
-        )
-      ],
-    );
+  Future<void> _checkGenres() async {
+    if (!await GenreDao().checkHasData()) {
+      MyResponseModel response = await getGenreList();
+      if (response.errorCode == 0) {
+        for (var data in response.data) {
+          GenreDao().insertData(data);
+        }
+      }
+    }
   }
 }

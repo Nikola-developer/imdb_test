@@ -8,7 +8,6 @@ Future<MyResponseModel> getMovieDetails(int id_movie, int page) async {
   MyResponseModel response = await sendRequest('/3/movie/$id_movie?api_key=b8d7f76947904a011286dc732c55234e&language=en_US&page=$page');
 
   if (response.errorCode == 0) {
-    print('sendRequest - json.decode(response.data): ${json.decode(response.data)}');
 
     /// TODO - Proveri sa njima, ali za sad preuzima samo "overview"
     return MyResponseModel(data: json.decode(response.data)['overview']);

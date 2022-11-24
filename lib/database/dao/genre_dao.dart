@@ -7,9 +7,8 @@ class GenreDao {
   Future<int> insertData(GenreModel genreModel) async {
     final db = await dbProvider.database;
 
-    print('GenreDao - insertData - genreModel.id: ${genreModel.id}');
-
-    var result = db!.insert(dbProvider.tableGenres, genreModel.toDatabaseJson());
+    var result =
+        db!.insert(dbProvider.tableGenres, genreModel.toDatabaseJson());
     return result;
   }
 
@@ -17,12 +16,21 @@ class GenreDao {
     final db = await dbProvider.database;
 
     final List<Map<String, dynamic>> maps =
-        await db!.rawQuery('SELECT g.* FROM movie_genres mg '
-            'LEFT JOIN genre g on g.id = mg.id_genre '
+        await db!.rawQuery('SELECT g.* FROM ${dbProvider.tableMoviesGenres} mg '
+            'LEFT JOIN ${dbProvider.tableGenres} g on g.id = mg.id_genre '
             'WHERE id_movie = $id_movie');
 
     return List.generate(maps.length, (i) {
       return GenreModel.fromJson(maps[i]);
     });
+  }
+
+  Future<bool> checkHasData() async {
+    final db = await dbProvider.database;
+
+    final List<Map<String, dynamic>> maps =
+        await db!.rawQuery('SELECT id FROM ${dbProvider.tableGenres}');
+
+    return maps.isNotEmpty;
   }
 }

@@ -64,16 +64,14 @@ class DatabaseProvider {
       ')',
     );
 
-    await database.execute(
-      'CREATE TABLE `$tableMoviesGenres` ( '
-      'id_movie INTEGER NOT NULL, '
-      'id_genre INTEGER NOT NULL, '
-      'UNIQUE(id_movie,id_genre), '
-      ' FOREIGN KEY (id_genre) '
-      '    REFERENCES genre (id), '
-      ' FOREIGN KEY (id_movie) '
-      '    REFERENCES movie (id) '
-      ')'
-    );
+    await database.execute('CREATE TABLE `$tableMoviesGenres` ( '
+        'id_movie INTEGER NOT NULL, '
+        'id_genre INTEGER NOT NULL, '
+        'UNIQUE(id_movie,id_genre), '
+        ' FOREIGN KEY (id_genre) '
+        '    REFERENCES genre (id), '
+        ' FOREIGN KEY (id_movie) '
+        '    REFERENCES movie (id) '
+        ')');
   }
 }

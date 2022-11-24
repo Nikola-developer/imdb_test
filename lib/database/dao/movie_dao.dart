@@ -7,8 +7,6 @@ class MovieDao {
   Future<bool> insertData(MovieModel movieModel) async {
     final db = await dbProvider.database;
 
-    print('MovieDao - insertData - movieModel.id: ${movieModel.id}');
-
     try {
       String data = '';
 
@@ -36,37 +34,30 @@ class MovieDao {
     final db = await dbProvider.database;
 
     int limit = 20;
-
-    // final List<Map<String, dynamic>> maps = await db!.query(
-    //   dbProvider.tableMovies,
-    //   where: 'id > ? AND id < ? ',
-    //   whereArgs: [page * limit, (page + 1) * limit],
-    // );
-
     if (page > 0) {
       page = page * 10;
     }
 
-      String sql = ''
-          "SELECT m.*, mg.genres, mg.genre_ids "
-          "FROM movies m "
-          "LEFT JOIN ( "
-          "    SELECT mg.id_movie, "
-          " '[' || GROUP_CONCAT('{\"id\":' || g.id || ', "
-          " \"name\":\"' || g.name || '\"}' ) || ']' as genres, "
-          " '[' ||GROUP_CONCAT(g.id) || ']' as genre_ids "
-          "    FROM movies_genres mg "
-          "    LEFT JOIN genres g on g.id = mg.id_genre "
-          "    GROUP BY mg.id_movie "
-          ") mg on mg.id_movie = m.id "
-          "WHERE m.page > ${page} AND m.page <= ${(page + limit)}  ";
+    String sql = ''
+        "SELECT m.*, mg.genres, mg.genre_ids "
+        "FROM ${dbProvider.tableMovies} m "
+        "LEFT JOIN ( "
+        "    SELECT mg.id_movie, "
+        " '[' || GROUP_CONCAT('{\"id\":' || g.id || ', "
+        " \"name\":\"' || g.name || '\"}' ) || ']' as genres, "
+        " '[' ||GROUP_CONCAT(g.id) || ']' as genre_ids "
+        "    FROM ${dbProvider.tableMoviesGenres} mg "
+        "    LEFT JOIN ${dbProvider.tableGenres} g on g.id = mg.id_genre "
+        "    GROUP BY mg.id_movie "
+        ") mg on mg.id_movie = m.id "
+        "WHERE m.page > ${page} AND m.page <= ${(page + limit)}  ";
 
-      print('sql: ${sql}');
-      final List<Map<String, dynamic>> maps = await db!.rawQuery(sql);
+    print('sql: ${sql}');
+    final List<Map<String, dynamic>> maps = await db!.rawQuery(sql);
 
-      return List.generate(maps.length, (i) {
-        print('maps[i]: ${maps[i]}');
-        return MovieModel.fromDatabaseJson(maps[i]);
-      });
-    }
+    return List.generate(maps.length, (i) {
+      print('maps[i]: ${maps[i]}');
+      return MovieModel.fromDatabaseJson(maps[i]);
+    });
+  }
 }
