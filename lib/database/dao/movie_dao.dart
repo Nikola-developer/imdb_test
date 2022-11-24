@@ -60,4 +60,19 @@ class MovieDao {
       return MovieModel.fromDatabaseJson(maps[i]);
     });
   }
+
+  Future<bool> toggleFavourite(int id, int favourite) async {
+    print('toggleFavourite');
+    final db = await dbProvider.database;
+
+    int rowsAffected = await db!.update(
+        dbProvider.tableMovies, {'favourite': favourite},
+        where: "id = ?", whereArgs: [id]);
+    print('toggleFavourite - rowsAffected: $rowsAffected');
+
+    if (rowsAffected > 0) {
+      return true;
+    }
+    return false;
+  }
 }

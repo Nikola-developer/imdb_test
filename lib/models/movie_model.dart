@@ -11,10 +11,10 @@ class MovieModel {
   bool video;
   double voteAverage;
   List<int> listGenreIds;
-
   List<GenreModel>? listGenres;
-
   bool favourite;
+
+  String? overview;
 
   MovieModel({
     required this.id,
