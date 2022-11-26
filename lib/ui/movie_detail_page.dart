@@ -41,14 +41,18 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
               ),
             ),
             Positioned(
-                top: 36,
-                left: 24,
-                child: InkWell(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
+              top: 36,
+              left: 24,
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(15),
                   child: Image.asset('assets/images/arrow_back.png'),
-                )),
+                ),
+              ),
+            ),
             Positioned(
               top: imageHeight,
               child: Container(
