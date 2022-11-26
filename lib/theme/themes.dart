@@ -7,7 +7,6 @@ ThemeData MyThemeData() {
     backgroundColor: BackgroundColor,
     scaffoldBackgroundColor: BackgroundColor,
     primaryColor: PrimaryColor,
-    primaryColorLight: PrimaryColorLight,
     accentColor: PrimaryColor,
     fontFamily: 'SF Pro Display',
     appBarTheme: const AppBarTheme(

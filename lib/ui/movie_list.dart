@@ -12,7 +12,9 @@ import 'package:imdb_test/theme/colors.dart';
 import 'package:imdb_test/ui/movie_item.dart';
 
 class MovieList extends StatefulWidget {
-  MovieList({super.key});
+  bool favouritesOnly = false;
+
+  MovieList({this.favouritesOnly = false});
 
   @override
   State<MovieList> createState() => _MovieListState();
@@ -74,12 +76,11 @@ class _MovieListState extends State<MovieList> {
 
   Future<List<MovieModel>> getDataList() async {
     late List<MovieModel> fechedMovies;
-    fechedMovies = await MovieDao().readData(_page);
+    fechedMovies = await MovieDao().readData(_page, favouritesOnly:widget.favouritesOnly);
     _page += 2; // Increase _page by 2
 
     /// Fetch new data only when not on favourites page
-    // if (!widget.favouritesOnly && fechedMovies.isEmpty) {
-    if (fechedMovies.isEmpty) {
+    if (!widget.favouritesOnly && fechedMovies.isEmpty) {
       MyResponseModel response = await getMoviesList(_page);
       if (response.errorCode == 0) {
         fechedMovies = response.data;
@@ -129,8 +130,7 @@ class _MovieListState extends State<MovieList> {
                   },
                 ),
               ),
-              // if (!favouritesOnly && !_hasNextPage)
-              if (!_hasNextPage)
+              if (!widget.favouritesOnly && !_hasNextPage)
                 Container(
                   padding: const EdgeInsets.only(top: 30, bottom: 40),
                   color: Colors.amber,

@@ -50,7 +50,8 @@ class MovieDao {
         "    LEFT JOIN ${dbProvider.tableGenres} g on g.id = mg.id_genre "
         "    GROUP BY mg.id_movie "
         ") mg on mg.id_movie = m.id "
-        "WHERE m.page > ${page} AND m.page <= ${(page + limit)}  ";
+        "WHERE m.page > ${page} AND m.page <= ${(page + limit)} "
+        "${favouritesOnly ? 'AND favourite == 1' : ''}";
 
     print('sql: ${sql}');
     final List<Map<String, dynamic>> maps = await db!.rawQuery(sql);

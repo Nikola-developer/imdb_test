@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:imdb_test/theme/themes.dart';
-import 'package:imdb_test/ui/home_page.dart';
+import 'package:imdb_test/ui/navigation_bar.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: MyThemeData(),
-      home: const MyHomePage(),
+      home: MyNavigationBar(),
     );
   }
 }
