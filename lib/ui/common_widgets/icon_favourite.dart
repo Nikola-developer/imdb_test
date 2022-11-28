@@ -4,9 +4,10 @@ import 'package:imdb_test/models/movie_model.dart';
 import 'package:imdb_test/theme/colors.dart';
 
 class IconFavourite extends StatefulWidget {
-  IconFavourite({super.key, required this.movie});
+  IconFavourite({super.key, required this.movie, this.setListState});
 
   MovieModel movie;
+  VoidCallback? setListState;
 
   @override
   State<IconFavourite> createState() => _IconFavouriteState();
@@ -90,6 +91,10 @@ class _IconFavouriteState extends State<IconFavourite>
             await Future.delayed(const Duration(milliseconds: 800));
             showAnimation = false;
             setState(() {});
+
+            if(widget.setListState != null){
+              widget.setListState!();
+            }
           },
           child: showAnimation
               ? _bodyWidget()

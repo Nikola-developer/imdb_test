@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:imdb_test/database/imdb_database.dart';
 import 'package:imdb_test/models/movie_model.dart';
 
@@ -24,7 +25,9 @@ class MovieDao {
       await batch.commit(continueOnError: false);
       return true;
     } catch (e) {
-      print('e: $e');
+      if (kDebugMode) {
+        print('e: $e');
+      }
       return false;
     }
   }
@@ -53,23 +56,19 @@ class MovieDao {
         "WHERE m.page > ${page} AND m.page <= ${(page + limit)} "
         "${favouritesOnly ? 'AND favourite == 1' : ''}";
 
-    print('sql: ${sql}');
     final List<Map<String, dynamic>> maps = await db!.rawQuery(sql);
 
     return List.generate(maps.length, (i) {
-      print('maps[i]: ${maps[i]}');
       return MovieModel.fromDatabaseJson(maps[i]);
     });
   }
 
   Future<bool> toggleFavourite(int id, int favourite) async {
-    print('toggleFavourite');
     final db = await dbProvider.database;
 
     int rowsAffected = await db!.update(
         dbProvider.tableMovies, {'favourite': favourite},
         where: "id = ?", whereArgs: [id]);
-    print('toggleFavourite - rowsAffected: $rowsAffected');
 
     if (rowsAffected > 0) {
       return true;

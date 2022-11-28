@@ -76,7 +76,8 @@ class _MovieListState extends State<MovieList> {
 
   Future<List<MovieModel>> getDataList() async {
     late List<MovieModel> fechedMovies;
-    fechedMovies = await MovieDao().readData(_page, favouritesOnly:widget.favouritesOnly);
+    fechedMovies =
+        await MovieDao().readData(_page, favouritesOnly: widget.favouritesOnly);
     _page += 2; // Increase _page by 2
 
     /// Fetch new data only when not on favourites page
@@ -106,6 +107,13 @@ class _MovieListState extends State<MovieList> {
     return fechedMovies;
   }
 
+  setListState() async {
+    if(widget.favouritesOnly){
+      listMovies.removeWhere((movie) => !movie.favourite);
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return _isFirstLoadRunning
@@ -124,7 +132,11 @@ class _MovieListState extends State<MovieList> {
                     return Column(
                       children: [
                         if (index > 0) const SizedBox(height: myPadding),
-                        MovieListItem(movie: listMovies[index])
+                        MovieListItem(
+                            movie: listMovies[index],
+                            setListState:
+                                // widget.favouritesOnly ? setListState : null)
+                                setListState)
                       ],
                     );
                   },

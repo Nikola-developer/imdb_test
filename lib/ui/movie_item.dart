@@ -6,9 +6,10 @@ import 'package:imdb_test/ui/common_widgets/icon_favourite.dart';
 import 'package:imdb_test/ui/movie_detail_page.dart';
 
 class MovieListItem extends StatefulWidget {
-  MovieListItem({super.key, required this.movie});
+  MovieListItem({super.key, required this.movie, this.setListState});
 
   MovieModel movie;
+  VoidCallback? setListState;
 
   @override
   State<MovieListItem> createState() => _MovieListItemState();
@@ -17,14 +18,16 @@ class MovieListItem extends StatefulWidget {
 class _MovieListItemState extends State<MovieListItem> {
   @override
   Widget build(BuildContext context) {
-    // print('https://image.tmdb.org/t/p/w500${widget.movie.posterPath}');
     return InkWell(
-      onTap: () {
-        Navigator.push(
+      onTap: () async {
+        var res = await Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => MovieDetailPage(movie: widget.movie)),
         );
+        if(widget.setListState != null){
+          widget.setListState!();
+        }
       },
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,6 +39,11 @@ class _MovieListItemState extends State<MovieListItem> {
               height: 100,
               width: 100,
               fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Image.asset(
+                'assets/images/logo.png',
+                height: 100,
+                width: 100,
+              ),
             ),
           ),
           const SizedBox(width: 16),
@@ -80,7 +88,7 @@ class _MovieListItemState extends State<MovieListItem> {
               ],
             ),
           ),
-          IconFavourite(movie: widget.movie),
+          IconFavourite(movie: widget.movie, setListState: widget.setListState),
         ],
       ),
     );

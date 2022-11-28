@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:imdb_test/theme/themes.dart';
+
 import 'package:imdb_test/ui/navigation_bar.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -19,10 +22,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     FlutterNativeSplash.remove();
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: MyThemeData(),
-      home: MyNavigationBar(),
+    return StreamProvider<InternetConnectionStatus>(
+      initialData: InternetConnectionStatus.connected,
+      create: (_) {
+        return InternetConnectionChecker().onStatusChange;
+      },
+      child: MaterialApp(
+        title: 'IMDb',
+        theme: MyThemeData(),
+        home: MyNavigationBar(),
+      ),
     );
   }
 }

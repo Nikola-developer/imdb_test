@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="online.nikolajocic.imdb_test">
+
+    <uses-permission android:name="android.permission.INTERNET"/>
+
    <application
         android:label="imdb_test"
         android:name="${applicationName}"

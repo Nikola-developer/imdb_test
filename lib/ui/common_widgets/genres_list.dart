@@ -12,7 +12,6 @@ class GenresList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // print('https://image.tmdb.org/t/p/w500${widget.movie.posterPath}');
     return ListView.builder(
       scrollDirection: Axis.horizontal,
       itemCount: listGenres.length,

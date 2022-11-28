@@ -31,12 +31,13 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
         height: MediaQuery.of(context).size.height,
         child: Stack(
           children: <Widget>[
-            Container(
-              child: Hero(
-                tag: '${widget.movie.id}_heroTag',
-                child: Image.network(
-                  'https://image.tmdb.org/t/p/w500${widget.movie.posterPath}',
-                  fit: BoxFit.cover,
+            Hero(
+              tag: '${widget.movie.id}_heroTag',
+              child: Image.network(
+                'https://image.tmdb.org/t/p/w500${widget.movie.posterPath}',
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) => Image.asset(
+                  'assets/images/logo.png',
                 ),
               ),
             ),
@@ -104,9 +105,9 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                           listGenres: widget.movie.listGenres!, fontSize: 12),
                     ),
                     const SizedBox(height: 40),
-                    Text(
+                    const Text(
                       'Description',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
                       ),

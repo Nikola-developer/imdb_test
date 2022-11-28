@@ -2,8 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:imdb_test/main.dart';
 import 'package:imdb_test/theme/colors.dart';
+import 'package:imdb_test/ui/common_widgets/internet_not_connected.dart';
 import 'package:imdb_test/ui/favourite_page.dart';
 import 'package:imdb_test/ui/home_page.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:provider/provider.dart';
 
 class MyNavigationBar extends StatefulWidget {
   @override
@@ -29,9 +32,20 @@ class _MyNavigationBarState extends State<MyNavigationBar> {
           ],
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(myPadding),
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body: Column(
+        children: [
+          Visibility(
+            visible: Provider.of<InternetConnectionStatus>(context) ==
+                InternetConnectionStatus.disconnected,
+            child: const InternetNotAvailable(),
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(myPadding),
+              child: _widgetOptions.elementAt(_selectedIndex),
+            ),
+          ),
+        ],
       ),
       bottomNavigationBar: Container(
         color: MyBlackColor,
